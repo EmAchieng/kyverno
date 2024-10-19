@@ -131,6 +131,22 @@ func ToPolicyReportResult(policyType engineapi.PolicyType, policyName string, ru
 			addProperty("binding", ruleResult.ValidatingAdmissionPolicyBinding().Name, &result)
 		}
 	}
+	if generatedResources := ruleResult.GeneratedResources(); len(generatedResources) != 0 {
+		property := make([]string, 0)
+		for _, r := range generatedResources {
+			property = append(property, getResourceInfo(r.GroupVersionKind(), r.GetName(), r.GetNamespace()))
+		}
+		addProperty("generated-resources", strings.Join(property, "; "), &result)
+		addProperty("resource-status", "generated", &result)
+	}
+	if clonedResources := ruleResult.ClonedResources(); len(clonedResources) != 0 {
+		property := make([]string, 0)
+		for _, r := range clonedResources {
+			property = append(property, getResourceInfo(r.GroupVersionKind(), r.GetName(), r.GetNamespace()))
+		}
+		addProperty("cloned-resources", strings.Join(property, "; "), &result)
+		addProperty("resource-status", "cloned", &result)
+	}
 	return result
 }
 

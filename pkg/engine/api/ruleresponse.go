@@ -51,6 +51,8 @@ type RuleResponse struct {
 	emitWarning bool
 	// properties are the additional properties from the rule that will be added to the policy report result
 	properties map[string]string
+	// clonedResources is the list of resources cloned from existing resources
+	clonedResources []*unstructured.Unstructured
 }
 
 func NewRuleResponse(name string, ruleType RuleType, msg string, status RuleStatus, properties map[string]string) *RuleResponse {
@@ -198,4 +200,15 @@ func (r *RuleResponse) HasStatus(status ...RuleStatus) bool {
 // String implements Stringer interface
 func (r *RuleResponse) String() string {
 	return fmt.Sprintf("rule %s (%s): %v", r.name, r.ruleType, r.message)
+}
+
+// sets the clonedResources field and returns the modified RuleResponse
+func (r *RuleResponse) WithClonedResources(resources []*unstructured.Unstructured) *RuleResponse {
+	r.clonedResources = resources
+	return r
+}
+
+// returns the clonedResources field
+func (r *RuleResponse) ClonedResources() []*unstructured.Unstructured {
+	return r.clonedResources
 }

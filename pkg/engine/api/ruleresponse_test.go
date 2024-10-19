@@ -1,6 +1,8 @@
 package api
 
 import (
+	"github.com/stretchr/testify/assert"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"testing"
 )
 
@@ -127,4 +129,14 @@ func TestRuleResponse_HasStatus(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRuleResponse_WithClonedResources(t *testing.T) {
+	ruleResponse := &RuleResponse{}
+	resources := []*unstructured.Unstructured{
+		{Object: map[string]interface{}{"name": "cloned-resource-1"}},
+		{Object: map[string]interface{}{"name": "cloned-resource-2"}},
+	}
+	updatedResponse := ruleResponse.WithClonedResources(resources)
+	assert.Equal(t, resources, updatedResponse.ClonedResources())
 }
